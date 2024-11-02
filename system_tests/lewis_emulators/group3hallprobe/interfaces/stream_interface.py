@@ -1,3 +1,5 @@
+import logging
+
 from lewis.adapters.stream import StreamInterface
 from lewis.core.logging import has_log
 from lewis.utils.command_builder import CmdBuilder
@@ -8,14 +10,15 @@ class Group3HallProbeStreamInterface(StreamInterface):
     in_terminator = "\r\n"
     out_terminator = "\r\n"
 
-    def __init__(self):
+    def __init__(self) -> None:
         super(Group3HallProbeStreamInterface, self).__init__()
+        self.log: logging.Logger
         # Commands that we expect via serial during normal operation
         self.commands = {
             CmdBuilder(self.catch_all).arg("^#9.*$").build()  # Catch-all command for debugging
         }
 
-    def handle_error(self, request, error):
+    def handle_error(self, request: str, error: str | Exception) -> None:
         """
         If command is not recognised print and error
 
@@ -26,5 +29,5 @@ class Group3HallProbeStreamInterface(StreamInterface):
         """
         self.log.error("An error occurred at request " + repr(request) + ": " + repr(error))
 
-    def catch_all(self, command):
+    def catch_all(self, command: str) -> None:
         pass
