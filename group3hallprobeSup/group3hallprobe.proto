@@ -1,18 +1,19 @@
-getIDN {
-    out "*IDN?";
-    in "%\$1[^\r\n]";
-    ExtraInput = Ignore;
+Terminator = CR LF;
+
+init {
+    out "A\$1 SE0GDR3GCNNUFG";
 }
 
-cmd {
-    out "\$1";
+get_field {
+    out "A\$1 F";
+	in "%39c";
 }
 
-setD {
-    out "\$1 %d";
+get_temp {
+    out "A\$1 T";
+	in "%f";
 }
-getD {
-    out "\$1?";
-    in "%d";
-    ExtraInput = Ignore;
+
+set_range {
+    out "A\$1 R%d";
 }

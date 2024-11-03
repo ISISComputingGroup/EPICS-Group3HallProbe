@@ -1,0 +1,126 @@
+record(stringout, "$(P)$(SENSORID):NAME") {
+    field(VAL, "$(NAME)")
+	field(PINI, "YES")
+}
+
+record(bo, "$(P)$(SENSORID):INIT") {
+    field(DESC, "Initialize probe channel")
+    field(DTYP, "stream")
+    field(OUT, "@group3hallprobe.proto init($(SENSORID)) $(PORT)")
+	field(PINI, "YES")
+	
+	field(SIML, "$(P)SIM")
+    field(SIOL, "$(P)SIM:$(SENSORID):INIT")
+    field(SDIS, "$(P)DISABLE")
+}
+
+record(stringin, "$(P)$(SENSORID):FIELD:_RAWSTR") {
+    field(DESC, "Raw field response string")
+    field(DTYP, "stream")
+    field(INP, "@group3hallprobe.proto get_field($(SENSORID)) $(PORT)")
+	field(SCAN, "$(FIELD_SCAN_RATE)")
+	
+	field(SIML, "$(P)SIM")
+    field(SIOL, "$(P)SIM:$(SENSORID):FIELD:_RAW")
+    field(SDIS, "$(P)DISABLE")
+}
+
+record(ai, "$(P)$(SENSORID):FIELD:_RAW") {
+    field(DESC, "Raw field")
+    field(INP, "$(P)$(SENSORID):FIELD:_RAWSTR CP MSS")
+	field(EGU, "Gauss")
+	field(PREC, "3")
+}
+
+record(calc, "$(P)$(SENSORID):FIELD") {
+    field(DESC, "Field")
+    field(INPA, "$(P)$(SENSORID):FIELD:_RAW CP MSS")
+	field(B, "$(SCALE)")
+	field(CALC, "A*B")
+	field(EGU, "Gauss")
+	field(PREC, "3")
+	field(ASG, "READONLY")
+}
+
+record(ai, "$(P)$(SENSORID):TEMPERATURE") {
+    field(DESC, "Raw field")
+    field(DTYP, "stream")
+    field(INP, "@group3hallprobe.proto get_temp($(SENSORID)) $(PORT)")
+	field(SCAN, "$(TEMP_SCAN_RATE)")
+	field(EGU, "C")
+	field(PREC, "3")
+	
+	field(SIML, "$(P)SIM")
+    field(SIOL, "$(P)SIM:$(SENSORID):TEMPERATURE:_RAW")
+    field(SDIS, "$(P)DISABLE")
+}
+
+record(mbbo, "$(P)$(SENSORID):RANGE:SP") {
+    field(DESC, "Raw field")
+    field(DTYP, "stream")
+    field(OUT, "@group3hallprobe.proto set_range($(SENSORID)) $(PORT)")
+	field(ZRST, "0.3 Tesla")
+	field(ONST, "0.6 Tesla")
+	field(TWST, "1.2 Tesla")
+	field(THST, "3.0 Tesla")
+	
+	field(SIML, "$(P)SIM")
+    field(SIOL, "$(P)SIM:$(SENSORID):RANGE:SP")
+    field(SDIS, "$(P)DISABLE")
+}
+
+record(mbbo, "$(P)$(SENSORID):STATEMACHINE:STATE") {
+    field(ZRST, "r0")
+    field(ONST, "r1")
+    field(TWST, "r2")
+    field(THST, "r3")
+    field(FRST, "disconnected")
+	field(FRSV, "MAJOR")
+}
+
+record(ao, "$(P)$(SENSORID):STATEMACHINE:STATE_CHANGE_DELAY") {
+    field(VAL, "2.0")
+	field(EGU, "s")
+	field(PINI, "YES")
+}
+
+
+#
+# Default move up/move down points copied from previous labview implementation.
+# May be adjusted via PV sets in config, if desired.
+#
+record(ao, "$(P)$(SENSORID):STATEMACHINE:R3:DOWN") {
+    field(VAL, "10000")
+	field(EGU, "Gauss")
+	field(PINI, "YES")
+}
+
+record(ao, "$(P)$(SENSORID):STATEMACHINE:R2:UP") {
+    field(VAL, "11600")
+	field(EGU, "Gauss")
+	field(PINI, "YES")
+}
+
+record(ao, "$(P)$(SENSORID):STATEMACHINE:R2:DOWN") {
+    field(VAL, "5000")
+	field(EGU, "Gauss")
+	field(PINI, "YES")
+}
+
+record(ao, "$(P)$(SENSORID):STATEMACHINE:R1:UP") {
+    field(VAL, "5800")
+	field(EGU, "Gauss")
+	field(PINI, "YES")
+}
+
+record(ao, "$(P)$(SENSORID):STATEMACHINE:R1:DOWN") {
+    field(VAL, "2500")
+	field(EGU, "Gauss")
+	field(PINI, "YES")
+}
+
+record(ao, "$(P)$(SENSORID):STATEMACHINE:R0:UP") {
+    field(VAL, "2900")
+	field(EGU, "Gauss")
+	field(PINI, "YES")
+}
