@@ -23,7 +23,7 @@ record(stringin, "$(P)$(SENSORID):FIELD:_RAWSTR") {
 	field(SCAN, "$(FIELD_SCAN_RATE)")
 	
 	field(SIML, "$(P)SIM")
-    field(SIOL, "$(P)SIM:$(SENSORID):FIELD:_RAW")
+    field(SIOL, "$(P)SIM:$(SENSORID):FIELD:_RAWSTR")
     field(SDIS, "$(P)DISABLE")
 	
 	info(archive, "1.0 VAL")
@@ -47,6 +47,7 @@ record(calc, "$(P)$(SENSORID):FIELD") {
 	
 	info(interest, "HIGH")
 	info(archive, "1.0 VAL")
+	info(alarm, "G3HALLPR")
 }
 
 record(ai, "$(P)$(SENSORID):TEMPERATURE") {
@@ -58,7 +59,7 @@ record(ai, "$(P)$(SENSORID):TEMPERATURE") {
 	field(PREC, "3")
 	
 	field(SIML, "$(P)SIM")
-    field(SIOL, "$(P)SIM:$(SENSORID):TEMPERATURE:_RAW")
+    field(SIOL, "$(P)SIM:$(SENSORID):TEMPERATURE")
     field(SDIS, "$(P)DISABLE")
 
     info(interest, "HIGH")
@@ -148,3 +149,8 @@ record(ao, "$(P)$(SENSORID):STATEMACHINE:R0:UP") {
 	field(PINI, "YES")
 	info(archive, "VAL")
 }
+
+record(stringout, "$(P)SIM:$(SENSORID):FIELD:_RAWSTR") {}
+record(ao, "$(P)SIM:$(SENSORID):TEMPERATURE") {}
+record(bo, "$(P)SIM:$(SENSORID):INIT") {}
+record(longout, "$(P)SIM:$(SENSORID):RANGE:SP") {}
