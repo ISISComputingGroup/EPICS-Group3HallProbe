@@ -1,13 +1,15 @@
 record(stringout, "$(P)$(SENSORID):NAME") {
+    field(DESC, "Probe name $(SENSORID)")
     field(VAL, "$(NAME)")
 	field(PINI, "YES")
+	info(interest, "LOW")
 }
 
+# Note: indirectly processed at ioc startup by SNL program
 record(bo, "$(P)$(SENSORID):INIT") {
     field(DESC, "Initialize probe channel")
     field(DTYP, "stream")
     field(OUT, "@group3hallprobe.proto init($(SENSORID)) $(PORT)")
-	field(PINI, "YES")
 	
 	field(SIML, "$(P)SIM")
     field(SIOL, "$(P)SIM:$(SENSORID):INIT")
@@ -23,6 +25,8 @@ record(stringin, "$(P)$(SENSORID):FIELD:_RAWSTR") {
 	field(SIML, "$(P)SIM")
     field(SIOL, "$(P)SIM:$(SENSORID):FIELD:_RAW")
     field(SDIS, "$(P)DISABLE")
+	
+	info(archive, "1.0 VAL")
 }
 
 record(ai, "$(P)$(SENSORID):FIELD:_RAW") {
@@ -40,6 +44,9 @@ record(calc, "$(P)$(SENSORID):FIELD") {
 	field(EGU, "Gauss")
 	field(PREC, "3")
 	field(ASG, "READONLY")
+	
+	info(interest, "HIGH")
+	info(archive, "1.0 VAL")
 }
 
 record(ai, "$(P)$(SENSORID):TEMPERATURE") {
@@ -53,6 +60,9 @@ record(ai, "$(P)$(SENSORID):TEMPERATURE") {
 	field(SIML, "$(P)SIM")
     field(SIOL, "$(P)SIM:$(SENSORID):TEMPERATURE:_RAW")
     field(SDIS, "$(P)DISABLE")
+
+    info(interest, "HIGH")
+	info(archive, "5.0 VAL")
 }
 
 record(mbbo, "$(P)$(SENSORID):RANGE:SP") {
@@ -67,7 +77,11 @@ record(mbbo, "$(P)$(SENSORID):RANGE:SP") {
 	field(SIML, "$(P)SIM")
     field(SIOL, "$(P)SIM:$(SENSORID):RANGE:SP")
     field(SDIS, "$(P)DISABLE")
+	
+	info(archive, "1.0 VAL")
 }
+
+alias("$(P)$(SENSORID):RANGE:SP", "$(P)$(SENSORID):RANGE")
 
 record(mbbo, "$(P)$(SENSORID):STATEMACHINE:STATE") {
     field(ZRST, "r0")
@@ -76,12 +90,16 @@ record(mbbo, "$(P)$(SENSORID):STATEMACHINE:STATE") {
     field(THST, "r3")
     field(FRST, "disconnected")
 	field(FRSV, "MAJOR")
+	
+	info(archive, "VAL")
 }
 
 record(ao, "$(P)$(SENSORID):STATEMACHINE:STATE_CHANGE_DELAY") {
     field(VAL, "2.0")
 	field(EGU, "s")
 	field(PINI, "YES")
+	
+	info(archive, "VAL")
 }
 
 
@@ -93,34 +111,40 @@ record(ao, "$(P)$(SENSORID):STATEMACHINE:R3:DOWN") {
     field(VAL, "10000")
 	field(EGU, "Gauss")
 	field(PINI, "YES")
+	info(archive, "VAL")
 }
 
 record(ao, "$(P)$(SENSORID):STATEMACHINE:R2:UP") {
     field(VAL, "11600")
 	field(EGU, "Gauss")
 	field(PINI, "YES")
+	info(archive, "VAL")
 }
 
 record(ao, "$(P)$(SENSORID):STATEMACHINE:R2:DOWN") {
     field(VAL, "5000")
 	field(EGU, "Gauss")
 	field(PINI, "YES")
+	info(archive, "VAL")
 }
 
 record(ao, "$(P)$(SENSORID):STATEMACHINE:R1:UP") {
     field(VAL, "5800")
 	field(EGU, "Gauss")
 	field(PINI, "YES")
+	info(archive, "VAL")
 }
 
 record(ao, "$(P)$(SENSORID):STATEMACHINE:R1:DOWN") {
     field(VAL, "2500")
 	field(EGU, "Gauss")
 	field(PINI, "YES")
+	info(archive, "VAL")
 }
 
 record(ao, "$(P)$(SENSORID):STATEMACHINE:R0:UP") {
     field(VAL, "2900")
 	field(EGU, "Gauss")
 	field(PINI, "YES")
+	info(archive, "VAL")
 }

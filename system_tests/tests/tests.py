@@ -9,12 +9,11 @@ from utils.testing import get_running_lewis_and_ioc, parameterized_list, skip_if
 
 DEVICE_PREFIX = "G3HALLPR_01"
 
-SCALES = [
-    1,
-    -1,
-    1,
-]
+PROBE_IDS = [0, 1, 2]
 
+SCALES = [1, -1, 1]
+
+NAMES = ["X", "-Y", "Z"]
 
 IOCS = [
     {
@@ -26,6 +25,9 @@ IOCS = [
             "SCALE0": SCALES[0],
             "SCALE1": SCALES[1],
             "SCALE2": SCALES[2],
+            "NAME0": NAMES[0],
+            "NAME1": NAMES[1],
+            "NAME2": NAMES[2],
         },
         "emulator": "group3hallprobe",
     },
@@ -33,8 +35,6 @@ IOCS = [
 
 
 TEST_MODES = [TestModes.DEVSIM]
-
-PROBE_IDS = [0, 1, 2]
 
 
 class Group3HallprobeTests(unittest.TestCase):
@@ -52,6 +52,9 @@ class Group3HallprobeTests(unittest.TestCase):
             self.ca.assert_that_pv_alarm_is(f"{probe_id}:TEMPERATURE", self.ca.Alarms.NONE)
             self.ca.assert_that_pv_alarm_is(f"{probe_id}:FIELD:_RAW", self.ca.Alarms.NONE)
 
+            # To speed up tests
+            self.ca.set_pv_value(f"{probe_id}:STATEMACHINE:STATE_CHANGE_DELAY", 0.1)
+
     def _set_temperature(self, probe_id: int, temperature: float):
         self._lewis.backdoor_run_function_on_device(
             "backdoor_set_temperature", [probe_id, temperature]
@@ -64,12 +67,17 @@ class Group3HallprobeTests(unittest.TestCase):
         self._lewis.backdoor_run_function_on_device("backdoor_set_initialized", [probe_id, init])
 
     @parameterized.expand(parameterized_list(PROBE_IDS))
+    def test_GIVEN_explicit_names_THEN_names_set(self, _: str, probe_id: int):
+        self.ca.assert_that_pv_is(f"{probe_id}:NAME", NAMES[probe_id])
+
+    @parameterized.expand(parameterized_list(PROBE_IDS))
     @skip_if_recsim("Uses emulator backdoor")
     def test_GIVEN_connected_inrange_device_THEN_can_read_raw_field(self, _: str, probe_id: int):
         self._set_field(probe_id, 123.456)
         self.ca.assert_that_pv_is(f"{probe_id}:FIELD:_RAWSTR", "123.456")
         self.ca.assert_that_pv_is_number(f"{probe_id}:FIELD:_RAW", 123.456, tolerance=0.0001)
         self.ca.assert_that_pv_alarm_is(f"{probe_id}:FIELD:_RAW", self.ca.Alarms.NONE)
+        self.ca.assert_that_pv_alarm_is(f"{probe_id}:FIELD", self.ca.Alarms.NONE)
 
     @parameterized.expand(parameterized_list(PROBE_IDS))
     @skip_if_recsim("Uses emulator backdoor")
@@ -84,6 +92,7 @@ class Group3HallprobeTests(unittest.TestCase):
         self.ca.assert_that_pv_is(f"{probe_id}:FIELD:_RAWSTR", "OVER RANGE")
         self.ca.assert_that_pv_alarm_is(f"{probe_id}:FIELD:_RAWSTR", self.ca.Alarms.NONE)
         self.ca.assert_that_pv_alarm_is(f"{probe_id}:FIELD:_RAW", self.ca.Alarms.INVALID)
+        self.ca.assert_that_pv_alarm_is(f"{probe_id}:FIELD", self.ca.Alarms.INVALID)
 
     @parameterized.expand(parameterized_list(PROBE_IDS))
     @skip_if_recsim("Uses emulator backdoor")
@@ -128,16 +137,19 @@ class Group3HallprobeTests(unittest.TestCase):
         self._set_field(probe_id, 1)
         self.ca.assert_that_pv_is(f"{probe_id}:STATEMACHINE:STATE", "r0")
         self.ca.assert_that_pv_is_number(f"{probe_id}:FIELD:_RAW", 1, tolerance=0.0001)
+        self.ca.assert_that_pv_alarm_is(f"{probe_id}:FIELD", self.ca.Alarms.NONE)
 
         with self._lewis.backdoor_simulate_disconnected_device():
             self.ca.assert_that_pv_is(f"{probe_id}:STATEMACHINE:STATE", "disconnected")
             self.ca.assert_that_pv_alarm_is(f"{probe_id}:FIELD:_RAW", self.ca.Alarms.INVALID)
+            self.ca.assert_that_pv_alarm_is(f"{probe_id}:FIELD", self.ca.Alarms.INVALID)
             self._set_initialized(probe_id, False)
 
         # On recovery, state machine should reinitialize device and make it back to range 0.
         self.ca.assert_that_pv_is(f"{probe_id}:STATEMACHINE:STATE", "r0")
         self.ca.assert_that_pv_alarm_is(f"{probe_id}:FIELD:_RAW", self.ca.Alarms.NONE)
         self.ca.assert_that_pv_is_number(f"{probe_id}:FIELD:_RAW", 1, tolerance=0.0001)
+        self.ca.assert_that_pv_alarm_is(f"{probe_id}:FIELD", self.ca.Alarms.NONE)
 
     @parameterized.expand(parameterized_list(PROBE_IDS))
     @skip_if_recsim("Uses emulator backdoor")
