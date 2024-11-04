@@ -1,4 +1,5 @@
 # pyright: reportMissingImports=false
+import itertools
 import unittest
 
 from parameterized import parameterized
@@ -70,12 +71,14 @@ class Group3HallprobeTests(unittest.TestCase):
     def test_GIVEN_explicit_names_THEN_names_set(self, _: str, probe_id: int):
         self.ca.assert_that_pv_is(f"{probe_id}:NAME", NAMES[probe_id])
 
-    @parameterized.expand(parameterized_list(PROBE_IDS))
+    @parameterized.expand(parameterized_list(itertools.product(PROBE_IDS, [123.456, -321.654])))
     @skip_if_recsim("Uses emulator backdoor")
-    def test_GIVEN_connected_inrange_device_THEN_can_read_raw_field(self, _: str, probe_id: int):
-        self._set_field(probe_id, 123.456)
-        self.ca.assert_that_pv_is(f"{probe_id}:FIELD:_RAWSTR", "123.456")
-        self.ca.assert_that_pv_is_number(f"{probe_id}:FIELD:_RAW", 123.456, tolerance=0.0001)
+    def test_GIVEN_connected_inrange_device_THEN_can_read_raw_field(
+        self, _: str, probe_id: int, field: float
+    ):
+        self._set_field(probe_id, field)
+        self.ca.assert_that_pv_is(f"{probe_id}:FIELD:_RAWSTR", str(field))
+        self.ca.assert_that_pv_is_number(f"{probe_id}:FIELD:_RAW", field, tolerance=0.0001)
         self.ca.assert_that_pv_alarm_is(f"{probe_id}:FIELD:_RAW", self.ca.Alarms.NONE)
         self.ca.assert_that_pv_alarm_is(f"{probe_id}:FIELD", self.ca.Alarms.NONE)
 

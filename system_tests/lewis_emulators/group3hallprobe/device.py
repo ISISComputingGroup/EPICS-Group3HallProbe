@@ -48,7 +48,7 @@ class Probe:
         self.initialized = True
 
     def is_over_range(self) -> bool:
-        return self.field > range_to_max_gauss(self.sensor_range)
+        return abs(self.field) > range_to_max_gauss(self.sensor_range)
 
     def initialize(self) -> None:
         self.sensor_range = Ranges.R3

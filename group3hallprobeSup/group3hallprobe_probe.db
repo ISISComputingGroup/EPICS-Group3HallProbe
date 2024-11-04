@@ -32,7 +32,7 @@ record(stringin, "$(P)$(SENSORID):FIELD:_RAWSTR") {
 record(ai, "$(P)$(SENSORID):FIELD:_RAW") {
     field(DESC, "Raw field")
     field(INP, "$(P)$(SENSORID):FIELD:_RAWSTR CP MSS")
-	field(EGU, "Gauss")
+	field(EGU, "G")
 	field(PREC, "3")
 }
 
@@ -41,7 +41,7 @@ record(calc, "$(P)$(SENSORID):FIELD") {
     field(INPA, "$(P)$(SENSORID):FIELD:_RAW CP MSS")
 	field(B, "$(SCALE)")
 	field(CALC, "A*B")
-	field(EGU, "Gauss")
+	field(EGU, "G")
 	field(PREC, "3")
 	field(ASG, "READONLY")
 	
@@ -109,42 +109,42 @@ record(ao, "$(P)$(SENSORID):STATEMACHINE:STATE_CHANGE_DELAY") {
 #
 record(ao, "$(P)$(SENSORID):STATEMACHINE:R3:DOWN") {
     field(VAL, "10000")
-	field(EGU, "Gauss")
+	field(EGU, "G")
 	field(PINI, "YES")
 	info(archive, "VAL")
 }
 
 record(ao, "$(P)$(SENSORID):STATEMACHINE:R2:UP") {
     field(VAL, "11600")
-	field(EGU, "Gauss")
+	field(EGU, "G")
 	field(PINI, "YES")
 	info(archive, "VAL")
 }
 
 record(ao, "$(P)$(SENSORID):STATEMACHINE:R2:DOWN") {
     field(VAL, "5000")
-	field(EGU, "Gauss")
+	field(EGU, "G")
 	field(PINI, "YES")
 	info(archive, "VAL")
 }
 
 record(ao, "$(P)$(SENSORID):STATEMACHINE:R1:UP") {
     field(VAL, "5800")
-	field(EGU, "Gauss")
+	field(EGU, "G")
 	field(PINI, "YES")
 	info(archive, "VAL")
 }
 
 record(ao, "$(P)$(SENSORID):STATEMACHINE:R1:DOWN") {
     field(VAL, "2500")
-	field(EGU, "Gauss")
+	field(EGU, "G")
 	field(PINI, "YES")
 	info(archive, "VAL")
 }
 
 record(ao, "$(P)$(SENSORID):STATEMACHINE:R0:UP") {
     field(VAL, "2900")
-	field(EGU, "Gauss")
+	field(EGU, "G")
 	field(PINI, "YES")
 	info(archive, "VAL")
 }

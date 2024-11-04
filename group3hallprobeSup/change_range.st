@@ -74,7 +74,7 @@ ss change_range
 	}
 	
 	/* Move down */
-	when(delay(state_change_delay) && raw_field_sevr == NO_ALARM && raw_field < r3_down) {} state r2
+	when(delay(state_change_delay) && raw_field_sevr == NO_ALARM && fabs(raw_field) < r3_down) {} state r2
 	
 	/* Cannot move up from r3 */
 	
@@ -89,10 +89,10 @@ ss change_range
 	}
 	
 	/* Move down */
-	when(delay(state_change_delay) && raw_field_sevr == NO_ALARM && raw_field < r2_down) {} state r1
+	when(delay(state_change_delay) && raw_field_sevr == NO_ALARM && fabs(raw_field) < r2_down) {} state r1
 	
 	/* Move up */
-	when(delay(state_change_delay) && raw_field_sevr == NO_ALARM && raw_field > r2_up) {} state r3
+	when(delay(state_change_delay) && raw_field_sevr == NO_ALARM && fabs(raw_field) > r2_up) {} state r3
 	when(delay(state_change_delay) && raw_field_str_sevr == NO_ALARM && strcmp(raw_field_str, "OVER RANGE") == 0) {} state r3
 	
 	/* Disconnected device */
@@ -106,10 +106,10 @@ ss change_range
 	}
 	
 	/* Move down */
-	when(delay(state_change_delay) && raw_field_sevr == NO_ALARM && raw_field < r1_down) {} state r0
+	when(delay(state_change_delay) && raw_field_sevr == NO_ALARM && fabs(raw_field) < r1_down) {} state r0
 	
 	/* Move up */
-	when(delay(state_change_delay) && raw_field_sevr == NO_ALARM && raw_field > r1_up) {} state r2
+	when(delay(state_change_delay) && raw_field_sevr == NO_ALARM && fabs(raw_field) > r1_up) {} state r2
 	when(delay(state_change_delay) && raw_field_str_sevr == NO_ALARM && strcmp(raw_field_str, "OVER RANGE") == 0) {} state r2
 	
 	/* Disconnected device */
@@ -125,7 +125,7 @@ ss change_range
 	/* Cannot move down from r0 */
 	
 	/* Move up */
-	when(delay(state_change_delay) && raw_field_sevr == NO_ALARM && raw_field > r0_up) {} state r1
+	when(delay(state_change_delay) && raw_field_sevr == NO_ALARM && fabs(raw_field) > r0_up) {} state r1
 	when(delay(state_change_delay) && raw_field_str_sevr == NO_ALARM && strcmp(raw_field_str, "OVER RANGE") == 0) {} state r1
 	
 	/* Disconnected device */
