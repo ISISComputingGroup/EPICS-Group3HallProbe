@@ -1,0 +1,19 @@
+Terminator = CR LF;
+
+init {
+    out "A\$1 SE0GDR3GCNNUFG";
+}
+
+get_field {
+    out "A\$1 F";
+	in "%39c";
+}
+
+get_temp {
+    out "A\$1 T";
+	in "%f";
+}
+
+set_range {
+    out "A\$1 R%d";
+}
