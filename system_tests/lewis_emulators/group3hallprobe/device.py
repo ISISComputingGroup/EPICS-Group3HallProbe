@@ -13,7 +13,7 @@ class Ranges(Enum):
     """
     Expresses a measurement range that a Probe can be in.
 
-    Values and indiced from device manual.
+    Values and indices from device manual.
     """
 
     R0 = 0  # 0.3 Tesla range

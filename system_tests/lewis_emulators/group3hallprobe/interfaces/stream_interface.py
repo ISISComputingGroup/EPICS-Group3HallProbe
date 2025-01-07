@@ -11,8 +11,8 @@ if_connected = conditional_reply("connected")
 
 @has_log
 class Group3HallProbeStreamInterface(StreamInterface):
-    in_terminator = "\r\n"
-    out_terminator = "\r\n"
+    in_terminator = "\n\r"  # Yes, really LF-CR not CR-LF
+    out_terminator = "\n\r"
 
     def __init__(self) -> None:
         super(Group3HallProbeStreamInterface, self).__init__()
@@ -47,17 +47,17 @@ class Group3HallProbeStreamInterface(StreamInterface):
     def get_field(self, probe_id: int) -> str:
         probe = self.device.probes[probe_id]
         if not probe.initialized:
-            return "uninitialized_bad_data"
+            return f"A{probe_id} F\n\runinitialized_bad_data"
         if probe.is_over_range():
-            return "OVER RANGE"
-        return f"{probe.field}"
+            return f"A{probe_id} F\n\rOVER RANGE"
+        return f"A{probe_id} F\n\r{probe.field}"
 
     @if_connected
     def get_temperature(self, probe_id: int) -> str:
         probe = self.device.probes[probe_id]
         if not probe.initialized:
-            return "uninitialized_bad_data"
-        return f"{probe.temperature}"
+            return f"A{probe_id} T\n\runinitialized_bad_data"
+        return f"A{probe_id} T\n\r{probe.temperature}C"
 
     @if_connected
     def set_range(self, probe_id: int, range_id: int) -> None:

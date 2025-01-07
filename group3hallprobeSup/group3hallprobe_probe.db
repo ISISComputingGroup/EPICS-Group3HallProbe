@@ -9,17 +9,22 @@ record(stringout, "$(P)$(SENSORID):NAME") {
 record(bo, "$(P)$(SENSORID):INIT") {
     field(DESC, "Initialize probe channel")
     field(DTYP, "stream")
-    field(OUT, "@group3hallprobe.proto init($(SENSORID)) $(PORT)")
+    field(OUT, "@group3hallprobe.proto init($(ADDR)) $(PORT)")
 	
 	field(SIML, "$(P)SIM")
     field(SIOL, "$(P)SIM:$(SENSORID):INIT")
     field(SDIS, "$(P)DISABLE")
 }
 
+record(longout, "$(P)$(SENSORID):TRIGGER") {
+    field(DESC, "Explicitly take a reading")
+    field(OUT, "$(P)$(SENSORID):FIELD:_RAWSTR.PROC PP")
+}
+
 record(stringin, "$(P)$(SENSORID):FIELD:_RAWSTR") {
     field(DESC, "Raw field response string")
     field(DTYP, "stream")
-    field(INP, "@group3hallprobe.proto get_field($(SENSORID)) $(PORT)")
+    field(INP, "@group3hallprobe.proto get_field($(ADDR)) $(PORT)")
 	field(SCAN, "$(FIELD_SCAN_RATE)")
 	
 	field(SIML, "$(P)SIM")
@@ -27,23 +32,31 @@ record(stringin, "$(P)$(SENSORID):FIELD:_RAWSTR") {
     field(SDIS, "$(P)DISABLE")
 	
 	info(archive, "1.0 VAL")
+	
+	field(FLNK, "$(P)$(SENSORID):FIELD:_RAW")
 }
 
 record(ai, "$(P)$(SENSORID):FIELD:_RAW") {
     field(DESC, "Raw field")
-    field(INP, "$(P)$(SENSORID):FIELD:_RAWSTR CP MSS")
+    field(INP, "$(P)$(SENSORID):FIELD:_RAWSTR MSS")
 	field(EGU, "G")
 	field(PREC, "3")
+	
+	field(FLNK, "$(P)$(SENSORID):FIELD")
 }
 
 record(calc, "$(P)$(SENSORID):FIELD") {
     field(DESC, "Field")
-    field(INPA, "$(P)$(SENSORID):FIELD:_RAW CP MSS")
+    field(INPA, "$(P)$(SENSORID):FIELD:_RAW MSS")
 	field(B, "$(SCALE)")
 	field(CALC, "A*B")
 	field(EGU, "G")
 	field(PREC, "3")
 	field(ASG, "READONLY")
+	
+	# Optionally process some other record after a new reading is acquired
+	# (e.g. as part of HIFI's zero-field system)
+	field(FLNK, "$(FLNK=)")
 	
 	info(interest, "HIGH")
 	info(archive, "1.0 VAL")
@@ -53,7 +66,7 @@ record(calc, "$(P)$(SENSORID):FIELD") {
 record(ai, "$(P)$(SENSORID):TEMPERATURE") {
     field(DESC, "Raw field")
     field(DTYP, "stream")
-    field(INP, "@group3hallprobe.proto get_temp($(SENSORID)) $(PORT)")
+    field(INP, "@group3hallprobe.proto get_temp($(ADDR)) $(PORT)")
 	field(SCAN, "$(TEMP_SCAN_RATE)")
 	field(EGU, "C")
 	field(PREC, "3")
@@ -69,7 +82,7 @@ record(ai, "$(P)$(SENSORID):TEMPERATURE") {
 record(mbbo, "$(P)$(SENSORID):RANGE:SP") {
     field(DESC, "Raw field")
     field(DTYP, "stream")
-    field(OUT, "@group3hallprobe.proto set_range($(SENSORID)) $(PORT)")
+    field(OUT, "@group3hallprobe.proto set_range($(ADDR)) $(PORT)")
 	field(ZRST, "0.3 Tesla")
 	field(ONST, "0.6 Tesla")
 	field(TWST, "1.2 Tesla")
