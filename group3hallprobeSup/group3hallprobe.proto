@@ -1,4 +1,4 @@
-Terminator = CR LF;
+Terminator = LF CR;
 
 init {
     out "A\$1 SE0GDR3GCNNUFG";
@@ -6,12 +6,14 @@ init {
 
 get_field {
     out "A\$1 F";
+	in "A\$1 F";
 	in "%39c";
 }
 
 get_temp {
     out "A\$1 T";
-	in "%f";
+	in "A\$1 T";
+	in "%fC";
 }
 
 set_range {
