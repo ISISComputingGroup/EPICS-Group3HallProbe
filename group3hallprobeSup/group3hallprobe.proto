@@ -2,6 +2,7 @@ Terminator = LF CR;
 
 init {
     out "A\$1 SE0GDR3GCNNUFG";
+	in "A%*d %*s";
 }
 
 get_field {
@@ -18,4 +19,5 @@ get_temp {
 
 set_range {
     out "A\$1 R%d";
+	in "A%*d R%*d";
 }
