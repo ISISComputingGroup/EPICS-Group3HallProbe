@@ -17,3 +17,11 @@ record(bo, "$(P)DISABLE")
     field(ZNAM, "COMMS ENABLED")
     field(ONAM, "COMMS DISABLED")
 }
+
+record(bo, "$(P)RESET")
+{
+    field(SCAN, "Passive")
+    field(DTYP, "stream")
+    field(OUT, "@group3hallprobe.proto reset($(P)) $(PORT)")
+}
+
