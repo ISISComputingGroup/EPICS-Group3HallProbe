@@ -19,6 +19,7 @@ record(bo, "$(P)$(SENSORID):INIT") {
 record(longout, "$(P)$(SENSORID):TRIGGER") {
     field(DESC, "Explicitly take a reading")
     field(OUT, "$(P)$(SENSORID):FIELD:_RAWSTR.PROC PP")
+	field(ASG, "NOTRAPW")
 }
 
 record(stringin, "$(P)$(SENSORID):FIELD:_RAWSTR") {
