@@ -19,6 +19,7 @@ record(bo, "$(P)$(SENSORID):INIT") {
 record(longout, "$(P)$(SENSORID):TRIGGER") {
     field(DESC, "Explicitly take a reading")
     field(OUT, "$(P)$(SENSORID):FIELD:_RAWSTR.PROC PP")
+	field(ASG, "NOTRAPW")
 }
 
 record(stringin, "$(P)$(SENSORID):FIELD:_RAWSTR") {
@@ -31,7 +32,7 @@ record(stringin, "$(P)$(SENSORID):FIELD:_RAWSTR") {
     field(SIOL, "$(P)SIM:$(SENSORID):FIELD:_RAWSTR")
     field(SDIS, "$(P)DISABLE")
 	
-	info(archive, "1.0 VAL")
+	info(archive, "5.0 VAL")
 	
 	field(FLNK, "$(P)$(SENSORID):FIELD:_RAW")
 }
@@ -59,7 +60,7 @@ record(calc, "$(P)$(SENSORID):FIELD") {
 	field(FLNK, "$(FLNK=)")
 	
 	info(interest, "HIGH")
-	info(archive, "1.0 VAL")
+	info(archive, "5.0 VAL")
 	info(alarm, "G3HALLPR")
 }
 
@@ -92,7 +93,7 @@ record(mbbo, "$(P)$(SENSORID):RANGE:SP") {
     field(SIOL, "$(P)SIM:$(SENSORID):RANGE:SP")
     field(SDIS, "$(P)DISABLE")
 	
-	info(archive, "1.0 VAL")
+	info(archive, "5.0 VAL")
 }
 
 alias("$(P)$(SENSORID):RANGE:SP", "$(P)$(SENSORID):RANGE")
@@ -105,7 +106,7 @@ record(mbbo, "$(P)$(SENSORID):STATEMACHINE:STATE") {
     field(FRST, "disconnected")
 	field(FRSV, "MAJOR")
 	
-	info(archive, "VAL")
+	info(archive, "5.0 VAL")
 }
 
 record(ao, "$(P)$(SENSORID):STATEMACHINE:STATE_CHANGE_DELAY") {
@@ -113,7 +114,7 @@ record(ao, "$(P)$(SENSORID):STATEMACHINE:STATE_CHANGE_DELAY") {
 	field(EGU, "s")
 	field(PINI, "YES")
 	
-	info(archive, "VAL")
+	info(archive, "5.0 VAL")
 }
 
 
@@ -125,42 +126,42 @@ record(ao, "$(P)$(SENSORID):STATEMACHINE:R3:DOWN") {
     field(VAL, "10000")
 	field(EGU, "G")
 	field(PINI, "YES")
-	info(archive, "VAL")
+	info(archive, "5.0 VAL")
 }
 
 record(ao, "$(P)$(SENSORID):STATEMACHINE:R2:UP") {
     field(VAL, "11600")
 	field(EGU, "G")
 	field(PINI, "YES")
-	info(archive, "VAL")
+	info(archive, "5.0 VAL")
 }
 
 record(ao, "$(P)$(SENSORID):STATEMACHINE:R2:DOWN") {
     field(VAL, "5000")
 	field(EGU, "G")
 	field(PINI, "YES")
-	info(archive, "VAL")
+	info(archive, "5.0 VAL")
 }
 
 record(ao, "$(P)$(SENSORID):STATEMACHINE:R1:UP") {
     field(VAL, "5800")
 	field(EGU, "G")
 	field(PINI, "YES")
-	info(archive, "VAL")
+	info(archive, "5.0 VAL")
 }
 
 record(ao, "$(P)$(SENSORID):STATEMACHINE:R1:DOWN") {
     field(VAL, "2500")
 	field(EGU, "G")
 	field(PINI, "YES")
-	info(archive, "VAL")
+	info(archive, "5.0 VAL")
 }
 
 record(ao, "$(P)$(SENSORID):STATEMACHINE:R0:UP") {
     field(VAL, "2900")
 	field(EGU, "G")
 	field(PINI, "YES")
-	info(archive, "VAL")
+	info(archive, "5.0 VAL")
 }
 
 record(stringout, "$(P)SIM:$(SENSORID):FIELD:_RAWSTR") {}

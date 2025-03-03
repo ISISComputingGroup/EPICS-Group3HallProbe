@@ -2,6 +2,7 @@ Terminator = LF CR;
 
 init {
     out "A\$1 SE0GDR3GCNNUFG";
+	in "A%*d %*s";
 }
 
 get_field {
@@ -18,4 +19,22 @@ get_temp {
 
 set_range {
     out "A\$1 R%d";
+	in "A%*d R%*d";
 }
+
+reset {
+    out 0x18;
+    in 0x18;
+	in " RESET";
+
+	wait 100;
+	
+	# Put back into last range used, reinit all other parameters
+	out "A0 SE0GDR%(\$10:RANGE:SP)dGCNNUFG";
+	in "A0 %*s";
+	out "A1 SE0GDR%(\$11:RANGE:SP)dGCNNUFG";
+	in "A1 %*s";
+	out "A2 SE0GDR%(\$12:RANGE:SP)dGCNNUFG";
+	in "A2 %*s";
+}
+

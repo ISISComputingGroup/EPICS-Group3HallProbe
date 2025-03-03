@@ -40,8 +40,9 @@ class Group3HallProbeStreamInterface(StreamInterface):
         self.log.error("An error occurred at request " + repr(request) + ": " + repr(error))
 
     @if_connected
-    def initialize(self, probe_id: int) -> None:
+    def initialize(self, probe_id: int) -> str:
         self.device.probes[probe_id].initialize()
+        return f"A{probe_id} SE0GDR3GCNNUFG"
 
     @if_connected
     def get_field(self, probe_id: int) -> str:
@@ -60,5 +61,6 @@ class Group3HallProbeStreamInterface(StreamInterface):
         return f"A{probe_id} T\n\r{probe.temperature}C"
 
     @if_connected
-    def set_range(self, probe_id: int, range_id: int) -> None:
+    def set_range(self, probe_id: int, range_id: int) -> str:
         self.device.probes[probe_id].sensor_range = Ranges(range_id)
+        return f"A{probe_id} R{range_id}"
