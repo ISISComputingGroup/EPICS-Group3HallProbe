@@ -45,10 +45,16 @@ record(ai, "$(P)$(SENSORID):FIELD:_RAW") {
 	field(FLNK, "$(P)$(SENSORID):FIELD")
 }
 
+record(bo, "$(P)$(SENSORID):_RECENT_RANGE_CHANGE") {
+    field(ZSV, "NO_ALARM")
+    field(OSV, "INVALID")
+}
+
 record(calc, "$(P)$(SENSORID):FIELD") {
     field(DESC, "Field")
     field(INPA, "$(P)$(SENSORID):FIELD:_RAW MSS")
 	field(B, "$(SCALE)")
+	field(INPC, "$(P)$(SENSORID):_RECENT_RANGE_CHANGE CP MSS")
 	field(CALC, "A*B")
 	field(EGU, "G")
 	field(PREC, "3")
