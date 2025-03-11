@@ -14,6 +14,8 @@ record(bo, "$(P)$(SENSORID):INIT") {
 	field(SIML, "$(P)SIM")
     field(SIOL, "$(P)SIM:$(SENSORID):INIT")
     field(SDIS, "$(P)DISABLE")
+
+    field(FLNK, "$(P)$(SENSORID):_LAST_CHANGE_TIME")
 }
 
 record(longout, "$(P)$(SENSORID):TRIGGER") {
@@ -47,8 +49,8 @@ record(ai, "$(P)$(SENSORID):FIELD:_RAW") {
 
 record (ai, "$(P)$(SENSORID):_LAST_CHANGE_TIME") {
     field(DESC, "Time the range was last changed")
-    field(DTYP, "Soft Timestamp"
-    field(INPA, "$(P)CS:IOC:G3HALLPR_01:DEVIOS:GTIM_TIME"
+    field(DTYP, "Soft Timestamp")
+    field(INPA, "$(PVPREFIX)CS:IOC:$(IOCNAME):DEVIOS:GTIM_TIME")
 }
 
 #
@@ -57,11 +59,11 @@ record (ai, "$(P)$(SENSORID):_LAST_CHANGE_TIME") {
 #
 record (calcout, "$(P)$(SENSORID):_RANGE_CHANGE_MSS") {
     field(DESC, "Set the MSS of RANGE:SP")
-    field(INPA, "$(P)CS:IOC:G3HALLPR_01:DEVIOS:GTIM_TIME CP"
-    field(INPB, "$(P)$(SENSORID):_LAST_CHANGE_TIME CP"
-    field(INPC, "$(P)$(SENSORID):STATEMACHINE:STATE_CHANGE_DELAY"
-    field(calc, "ABS(A-B) < C"
-    field(out, "$(P)$(SENSORID):_RECENT_RANGE_CHANGE PP")
+    field(INPA, "$(PVPREFIX)CS:IOC:$(IOCNAME):DEVIOS:GTIM_TIME CP")
+    field(INPB, "$(P)$(SENSORID):_LAST_CHANGE_TIME CP")
+    field(INPC, "$(P)$(SENSORID):STATEMACHINE:STATE_CHANGE_DELAY CP")
+    field(CALC, "ABS(A-B) < C")
+    field(OUT, "$(P)$(SENSORID):_RECENT_RANGE_CHANGE PP")
 }
 
 #
