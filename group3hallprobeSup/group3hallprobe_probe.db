@@ -45,7 +45,30 @@ record(ai, "$(P)$(SENSORID):FIELD:_RAW") {
 	field(FLNK, "$(P)$(SENSORID):FIELD")
 }
 
+record (ai, "$(P)$(SENSORID):_LAST_CHANGE_TIME") {
+    field(DESC, "Time the range was last changed")
+    field(DTYP, "Soft Timestamp"
+    field(INPA, "$(P)CS:IOC:G3HALLPR_01:DEVIOS:GTIM_TIME"
+}
+
+#
+# Compare time now with time since last range change.
+# If less than preset period, then output 1 to _RECENT_RANGE_CHANGE
+#
+record (calcout, "$(P)$(SENSORID):_RANGE_CHANGE_MSS") {
+    field(DESC, "Set the MSS of RANGE:SP")
+    field(INPA, "$(P)CS:IOC:G3HALLPR_01:DEVIOS:GTIM_TIME CP"
+    field(INPB, "$(P)$(SENSORID):_LAST_CHANGE_TIME CP"
+    field(INPC, "$(P)$(SENSORID):STATEMACHINE:STATE_CHANGE_DELAY"
+    field(calc, "ABS(A-B) < C"
+    field(out, "$(P)$(SENSORID):_RECENT_RANGE_CHANGE PP")
+}
+
+#
+# This is written to by _RANGE_CHANGE_MSS record
+#
 record(bo, "$(P)$(SENSORID):_RECENT_RANGE_CHANGE") {
+    field(DESC, "One if < period since last change ")
     field(ZSV, "NO_ALARM")
     field(OSV, "INVALID")
 }
@@ -93,7 +116,11 @@ record(mbbo, "$(P)$(SENSORID):RANGE:SP") {
 	field(ONST, "0.6 Tesla")
 	field(TWST, "1.2 Tesla")
 	field(THST, "3.0 Tesla")
-	
+
+    # Need to prevent another range change within a set period since the last one
+    # to prevent instability.
+	field (FLNK, "$(P)$(SENSORID):_LAST_CHANGE_TIME PP")
+
 	field(SIML, "$(P)SIM")
     field(SIOL, "$(P)SIM:$(SENSORID):RANGE:SP")
     field(SDIS, "$(P)DISABLE")
