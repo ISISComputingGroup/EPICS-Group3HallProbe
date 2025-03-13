@@ -54,7 +54,7 @@ class Group3HallprobeTests(unittest.TestCase):
             self.ca.assert_that_pv_alarm_is(f"{probe_id}:FIELD:_RAW", self.ca.Alarms.NONE)
 
             # To speed up tests
-            self.ca.set_pv_value(f"{probe_id}:STATEMACHINE:STATE_CHANGE_DELAY", 0.1)
+            self.ca.set_pv_value(f"{probe_id}:STATEMACHINE:STATE_CHANGE_DELAY", 1.0)
 
     def _set_temperature(self, probe_id: int, temperature: float):
         self._lewis.backdoor_run_function_on_device(
@@ -164,3 +164,24 @@ class Group3HallprobeTests(unittest.TestCase):
         self.ca.assert_that_pv_is_number(
             f"{probe_id}:FIELD", 5 * SCALES[probe_id], tolerance=0.0001
         )
+
+    @parameterized.expand(parameterized_list(PROBE_IDS))
+    @skip_if_recsim("Uses emulator backdoor")
+    def test_GIVEN_range_change_THEN_field_is_invalid_shortly_after_range_change(
+        self, _: str, probe_id: int
+    ):
+        move_up = 2901
+        self._set_field(probe_id, move_up)
+        self.ca.assert_that_pv_is_number(f"{probe_id}:FIELD:_RAW", 2901, tolerance=0.0001)
+        self.ca.assert_that_pv_alarm_is(f"{probe_id}:FIELD", self.ca.Alarms.INVALID, timeout=1)
+
+        self.ca.assert_that_pv_alarm_is(f"{probe_id}:FIELD", self.ca.Alarms.NONE, timeout=5)
+
+    @parameterized.expand(parameterized_list(PROBE_IDS))
+    @skip_if_recsim("Uses emulator backdoor")
+    def test_GIVEN_device_reinitialized_THEN_field_is_invalid_shortly_after_reinitialization(
+        self, _: str, probe_id: int
+    ):
+        self.ca.process_pv(f"{probe_id}:INIT")
+        self.ca.assert_that_pv_alarm_is(f"{probe_id}:FIELD", self.ca.Alarms.INVALID, timeout=1)
+        self.ca.assert_that_pv_alarm_is(f"{probe_id}:FIELD", self.ca.Alarms.NONE, timeout=5)
